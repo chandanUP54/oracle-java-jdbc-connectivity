@@ -22,6 +22,7 @@ public class EmployeeController {
         employeeDAO.addEmployee(employee);
         return "Employee added successfully!";
     }
+    
 
     @GetMapping("/getAll")
     public List<Employee> getAllEmployees() {

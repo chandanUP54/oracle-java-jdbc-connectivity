@@ -1,0 +1,87 @@
+sqlplus / as sysdba
+
+ALTER SESSION SET CONTAINER = ORCLPDB;
+
+SHOW CON_NAME; --->>> ORCLPDB
+
+CREATE USER user1 IDENTIFIED BY password1 DEFAULT TABLESPACE users TEMPORARY TABLESPACE temp QUOTA UNLIMITED ON users;
+
+GRANT CONNECT, RESOURCE TO user1;
+
+GRANT DBA TO user1;
+
+
+
+============================================================================
+
+Database Connection CONNECT ---->>> 
+
+Name-  test_conn
+Database Type - Oracle
+
+
+Authentication Type - Default
+
+Username- user1
+Password- password1
+
+Role- default
+save default
+
+Connection Type - Basic
+
+SID - ORCLPDB 
+Service Name - ORCLPDB
+
+============-->
+
+
+name- DBCONN
+Username - user1
+Password - password1
+SID - ORCLPDB
+Service Name - ORCLPDB
+
+
+##########################################################
+if database not open 
+sqlplus / as sysdba
+ALTER SESSION SET CONTAINER = ORCLPDB;
+SHOW CON_NAME; 
+SELECT OPEN_MODE FROM V$DATABASE; -->> (if MOUNTED)
+ALTER DATABASE OPEN;
+SELECT OPEN_MODE FROM V$DATABASE; ---->> READ WRITE
+##########################################################
+
+
+##############################################################
+spring boot with oracle sql ----- (pure JDBC)
+
+spring.application.name=oracle-second
+spring.datasource.url=jdbc:oracle:thin:@localhost:1521:ORCLPDB
+spring.datasource.username=user1
+spring.datasource.password=password1
+spring.datasource.driver-class-name=oracle.jdbc.OracleDriver
+
+note this url-->>
+
+spring.datasource.url=jdbc:oracle:thin:@localhost:1521:ORCLPDB
+#spring.datasource.url=jdbc:oracle:thin:@localhost:1521:xe(SID)
+
+------
+spring boot with oracle sql ----- (JPA) 
+
+spring.application.name=oracle-spring-boot-app
+#jdbc:oracle:thin:@[host]:[port]:[sid/service_name]
+spring.datasource.url=jdbc:oracle:thin:@//localhost:1521/ORCLPDB
+spring.datasource.username=user1
+spring.datasource.password=password1
+spring.datasource.driver-class-name=oracle.jdbc.OracleDriver
+
+spring.jpa.show-sql=true
+spring.jpa.hibernate.ddl-auto=update
+
+###############################################################
+
+
+
