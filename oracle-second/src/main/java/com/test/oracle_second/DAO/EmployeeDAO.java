@@ -5,7 +5,13 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 
 import com.test.oracle_second.jdbc.OracleJDBCUtil;
 import com.test.oracle_second.model.Employee;
@@ -51,4 +57,10 @@ public class EmployeeDAO {
 		}
 		return employees;
 	}
+
+
+	
+
+
+
 }

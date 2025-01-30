@@ -15,7 +15,7 @@ public class UserController {
 	@Autowired
 	private EmployeeRepository employeeRepository;
 	
-	@GetMapping("/test")
+	@PostMapping("/test")
 	public String hello() {
 		return "hello";
 	}
