@@ -129,39 +129,9 @@ public class EmployeeController {
 						.body(Collections.singletonList(Map.of("error", "Query not found for QUERY_ID = 2")));
 			}
 
-			Map<Integer, Object> paramMap = new HashMap<>();
-			List<String> finalSqlParts = new ArrayList<>();
-			int paramIndex = 1;
-
-			Pattern pattern = Pattern.compile(":(\\p{Upper}\\w*)(?=\\b|[^a-zA-Z0-9])");
-//	            Pattern pattern = Pattern.compile(":(\\w+)");
-			Matcher matcher = pattern.matcher(dynamicSql);
-			int lastEnd = 0;
-
-			while (matcher.find()) {
-				String paramName = matcher.group(1);
-				Object paramValue = request.get(paramName);
-
-				finalSqlParts.add(dynamicSql.substring(lastEnd, matcher.start()));
-				lastEnd = matcher.end();
-
-				if (paramValue instanceof List<?>) {
-					List<?> values = (List<?>) paramValue;
-					List<String> questionMarks = new ArrayList<>();
-					for (Object value : values) {
-						questionMarks.add("?");
-						paramMap.put(paramIndex++, value);
-					}
-					finalSqlParts.add(String.join(",", questionMarks));
-				} else {
-					finalSqlParts.add("?");
-					paramMap.put(paramIndex++, paramValue);
-				}
-			}
-			finalSqlParts.add(dynamicSql.substring(lastEnd));
-
-			String finalSql = String.join("", finalSqlParts);
-
+			//send Request in jsonObj
+			String finalSql=changToQuestion(dynamicSql, request);
+			
 			try {
 
 				List<Object> xyz = new ArrayList<>();
@@ -196,5 +166,64 @@ public class EmployeeController {
 
 		return ResponseEntity.ok(employees);
 	}
+	
+	
+	public String changToQuestion(String dynamicSql,Map<String, Object> request) {
+		
+		
+		Map<Integer, Object> paramMap = new HashMap<>();
+		List<String> finalSqlParts = new ArrayList<>();
+		int paramIndex = 1;
+
+		Pattern pattern = Pattern.compile(":(\\p{Upper}\\w*)(?=\\b|[^a-zA-Z0-9])");
+//            Pattern pattern = Pattern.compile(":(\\w+)");
+		Matcher matcher = pattern.matcher(dynamicSql);
+		int lastEnd = 0;
+
+		while (matcher.find()) {
+			String paramName = matcher.group(1);
+			//request se aayega={EMP_ID=1, LOCATION=[Lucknow, NCR, Ahmedabad], DEPARTMENT=[IT],XYX="abc"}
+			Object paramValue = request.get(paramName); //request
+
+			finalSqlParts.add(dynamicSql.substring(lastEnd, matcher.start()));
+			lastEnd = matcher.end();
+
+			if (paramValue instanceof List<?>) {
+				List<?> values = (List<?>) paramValue;
+				List<String> questionMarks = new ArrayList<>();
+				for (Object value : values) {
+					questionMarks.add("?");
+					paramMap.put(paramIndex++, value);
+				}
+				finalSqlParts.add(String.join(",", questionMarks));
+			} else {
+				finalSqlParts.add("?");
+				paramMap.put(paramIndex++, paramValue);
+			}
+		}
+		finalSqlParts.add(dynamicSql.substring(lastEnd));
+
+		String finalSql = String.join("", finalSqlParts);
+		
+		return finalSql;
+		
+	}
+	
+    
+    // Method to add data dynamically
+//    public void addData(String lsData) {
+//    	
+//    	List<String> lsFinal = new ArrayList<>();
+//    	
+//        if (lsData instanceof String) {
+//            lsFinal.add((String) lsData);
+//        } else if (lsData instanceof JSONArray) {
+//            // If lsData is a List, add each element to lsFinal
+//            lsFinal.addAll((List<String>) lsData);
+//        }
+//    }
+    
+  
+
 
 }
